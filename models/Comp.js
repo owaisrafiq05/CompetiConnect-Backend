@@ -31,6 +31,10 @@ const instance = new mongoose.Schema(
       type: String,
       required: true,
     },
+    submissionRules: {
+      type: String,
+      required: true,
+    },
     problemStatement: { 
       type: String,
       required: true,
@@ -46,6 +50,15 @@ const instance = new mongoose.Schema(
     totalPoints: { 
       type: Number,
       default: 0,
+    },
+    announcements: [{
+      type: String,
+      required: false,
+    }],
+    price: {
+      type: Number,
+      default: 0,
+      required: false,
     },
   },
   {

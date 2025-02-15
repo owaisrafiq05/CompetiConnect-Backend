@@ -9,12 +9,21 @@ import CompSubmission from '../../models/CompSubmission.js';
 export const getAllCompetitions = async (req, res) => {
   try {
     const competitions = await Competition.find()
-      .populate('compOwnerUserId', 'username email')
       .populate('compType', 'name description')
-      .populate('participants', 'username email')
-      .populate('compSubmissionObjId');
+      .select('compName compDescription participants isPrivate price')
+      .lean();
     
-    res.status(StatusCodes.OK).json({ competitions });
+    const simplifiedCompetitions = competitions.map(comp => ({
+      _id: comp._id,
+      compName: comp.compName,
+      compDescription: comp.compDescription,
+      compType: comp.compType,
+      participantCount: comp.participants.length,
+      isPrivate: comp.isPrivate,
+      price: comp.price
+    }));
+    
+    res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
@@ -32,6 +41,8 @@ export const createCompetition = async (req, res) => {
       passCode,
       problemStatement,
       compRuleBook,
+      submissionRules,
+      price,
     } = req.body;
 
     const competition = await Competition.create({
@@ -43,6 +54,8 @@ export const createCompetition = async (req, res) => {
       passCode,
       problemStatement,
       compRuleBook,
+      submissionRules,
+      price,
       participants: [], // Initialize empty array
       compSubmissionObjId: [], // Initialize empty array
     });
@@ -56,8 +69,9 @@ export const createCompetition = async (req, res) => {
 // Add participant to competition
 export const addParticipant = async (req, res) => {
   try {
-    const { competitionId, userId } = req.params;
-    
+    const { competitionId } = req.params;
+    const { userId } = req.body;
+
     const competition = await Competition.findById(competitionId);
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
@@ -131,7 +145,8 @@ export const getCompetitionById = async (req, res) => {
       .populate('compOwnerUserId', 'username email')
       .populate('compType', 'name description')
       .populate('participants', 'username email')
-      .populate('compSubmissionObjId');
+      .populate('compSubmissionObjId')
+      .select('compName compDescription isPrivate passCode problemStatement compRuleBook submissionRules totalPoints price announcements createdAt updatedAt');
 
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
@@ -165,7 +180,8 @@ export const getAllRegistrationsById = async (req, res) => {
 // Approve user registration
 export const approveUser = async (req, res) => {
   try {
-    const { competitionId, userId } = req.params;
+    const { competitionId } = req.params;
+    const { userId } = req.body;
 
     // Find and delete the registration
     const registration = await Register.findOneAndDelete({ 
@@ -200,29 +216,58 @@ export const approveUser = async (req, res) => {
 
     // Send email
     const emailContent = `
-      Dear ${user.username},
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 10px;">
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px;">
+        <h2 style="color: #2c3e50; margin-bottom: 20px; font-size: 24px; word-wrap: break-word;">🎉 Registration Approved!</h2>
+        
+        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Dear <strong>${user.username}</strong>,</p>
+        
+        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Your registration for <strong>${competition.compName}</strong> has been approved!</p>
 
-      Your registration for ${competition.compName} has been approved!
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; word-wrap: break-word;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Competition Details</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin: 8px 0;"><strong>Name:</strong> ${competition.compName}</li>
+                <li style="margin: 8px 0;"><strong>Description:</strong> ${competition.compDescription}</li>
+                <li style="margin: 8px 0;"><strong>Type:</strong> ${competition.compType.name}</li>
+                <li style="margin: 8px 0;"><strong>Pass Code:</strong> ${competition.passCode || 'N/A'}</li>
+                <li style="margin: 8px 0;"><strong>Price:</strong> ${competition.price || 'N/A'}</li>
+            </ul>
+        </div>
 
-      Competition Details:
-      Name: ${competition.compName}
-      Description: ${competition.compDescription}
-      Type: ${competition.compType.name}
-      Pass Code: ${competition.passCode || 'N/A'}
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Problem Statement</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.problemStatement}</p>
+        </div>
 
-      Problem Statement:
-      ${competition.problemStatement}
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Rule Book</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.compRuleBook}</p>
+        </div>
 
-      Rule Book:
-      ${competition.compRuleBook}
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Submission Rules</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.submissionRules}</p>
+        </div>
 
-      Best of luck!
-    `;
+        <p style="color: #34495e; font-size: 16px; text-align: center; margin-top: 25px;">
+            <strong>Best of luck! 🚀</strong>
+        </p>
+    </div>
+</body>
+</html>
+`;
 
     await sendEmail({
       to: user.email,
       subject: `Registration Approved - ${competition.compName}`,
-      text: emailContent,
+      html: emailContent,
     });
 
     res.status(StatusCodes.OK).json({ 
@@ -239,6 +284,7 @@ export const createRegistration = async (req, res) => {
   try {
     const { competitionId } = req.params;
     const { userId } = req.body;
+    const paymentSlip = req.file?.path; // Cloudinary URL if file was uploaded
 
     // Check if competition exists
     const competition = await Competition.findById(competitionId);
@@ -255,7 +301,8 @@ export const createRegistration = async (req, res) => {
     // Create registration
     const registration = await Register.create({
       competitionId,
-      userId
+      userId,
+      paymentSlip
     });
 
     res.status(StatusCodes.CREATED).json({ registration });
@@ -393,6 +440,73 @@ export const getAllParticipantsSortedByPoints = async (req, res) => {
     participantsWithPoints.sort((a, b) => b.points - a.points);
 
     res.status(StatusCodes.OK).json({ participants: participantsWithPoints });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
+// Get all announcements for a competition
+export const getAnnouncements = async (req, res) => {
+  try {
+    const { competitionId } = req.params;
+    
+    const competition = await Competition.findById(competitionId);
+    if (!competition) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
+    }
+
+    res.status(StatusCodes.OK).json({ announcements: competition.announcements });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
+// Add announcement to competition
+export const addAnnouncement = async (req, res) => {
+  try {
+    const { competitionId } = req.params;
+    const { announcement } = req.body;
+
+    if (!announcement) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Announcement text is required' });
+    }
+
+    const competition = await Competition.findById(competitionId);
+    if (!competition) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
+    }
+
+    competition.announcements.push(announcement);
+    await competition.save();
+
+    res.status(StatusCodes.OK).json({ announcements: competition.announcements });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
+// Get all competitions by user ID
+export const getAllCompetitionsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const competitions = await Competition.find({ compOwnerUserId: userId })
+      .populate('compType', 'name description')
+      .select('compName compDescription participants isPrivate price createdAt')
+      .lean();
+    
+    const simplifiedCompetitions = competitions.map(comp => ({
+      _id: comp._id,
+      compName: comp.compName,
+      compDescription: comp.compDescription,
+      compType: comp.compType,
+      participantCount: comp.participants.length,
+      isPrivate: comp.isPrivate,
+      price: comp.price,
+      createdAt: comp.createdAt
+    }));
+    
+    res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }

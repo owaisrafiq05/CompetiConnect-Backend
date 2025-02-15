@@ -17,8 +17,11 @@ import {
   getAllSubmissionsByCompetitionId,
   updateSubmissionPoints,
   getAllParticipantsSortedByPoints,
+  getAnnouncements,
+  addAnnouncement,
+  getAllCompetitionsByUserId,
 } from '../controllers/competitions/competitions.js';
-import { uploadSubmission } from '../middlewares/fileUpload.js';
+import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 
 const router = express.Router();
 
@@ -30,14 +33,14 @@ router.get('/type', getAllCompTypes);
 router.get('/', getAllCompetitions);
 router.post('/', createCompetition);
 router.get('/:competitionId', getCompetitionById);
-router.patch('/:competitionId/participants/:userId', addParticipant);
+router.patch('/:competitionId/participants', addParticipant);
 router.patch('/:competitionId/points', updateTotalPoints);
 router.patch('/:competitionId/submissions', addSubmission);
 router.get('/:competitionId/registrations', getAllRegistrationsById);
-router.post('/:competitionId/approve/:userId', approveUser);
+router.post('/:competitionId/approve', approveUser);
 
 // New routes for registration and submissions
-router.post('/:competitionId/register', createRegistration);
+router.post('/:competitionId/register', uploadPaymentSlip.single('paymentSlip'), createRegistration);
 router.post(
   '/:competitionId/submissions',
   uploadSubmission.single('zipFile'),
@@ -51,5 +54,12 @@ router.patch('/:competitionId/submissions/points', updateSubmissionPoints);
 
 // Add new route for getting sorted participants
 router.get('/:competitionId/participants/leaderboard', getAllParticipantsSortedByPoints);
+
+// Announcement routes
+router.get('/:competitionId/announcements', getAnnouncements);
+router.post('/:competitionId/announcements', addAnnouncement);
+
+// Get all competitions by user ID
+router.get('/user/:userId', getAllCompetitionsByUserId);
 
 export default router;
