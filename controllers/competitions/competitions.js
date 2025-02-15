@@ -69,8 +69,9 @@ export const createCompetition = async (req, res) => {
 // Add participant to competition
 export const addParticipant = async (req, res) => {
   try {
-    const { competitionId, userId } = req.params;
-    
+    const { competitionId } = req.params;
+    const { userId } = req.body;
+
     const competition = await Competition.findById(competitionId);
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });

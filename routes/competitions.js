@@ -32,7 +32,7 @@ router.get('/type', getAllCompTypes);
 router.get('/', getAllCompetitions);
 router.post('/', createCompetition);
 router.get('/:competitionId', getCompetitionById);
-router.patch('/:competitionId/participants/:userId', addParticipant);
+router.patch('/:competitionId/participants', addParticipant);
 router.patch('/:competitionId/points', updateTotalPoints);
 router.patch('/:competitionId/submissions', addSubmission);
 router.get('/:competitionId/registrations', getAllRegistrationsById);
