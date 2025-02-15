@@ -16,9 +16,8 @@ const instance = new mongoose.Schema(
       required: true,
     },
     compType: { 
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: 'CompType',
     },
     isPrivate: { 
       type: Boolean,
