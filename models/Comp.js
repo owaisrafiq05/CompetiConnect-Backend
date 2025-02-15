@@ -32,14 +32,18 @@ const instance = new mongoose.Schema(
       type: String,
       required: true,
     },
+    problemStatement: { 
+      type: String,
+      required: true,
+    },
     participants: [{ 
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     }],
-    compSubmissionObjId: { 
+    compSubmissionObjId: [{ 
       type: mongoose.Schema.Types.ObjectId,
       ref: 'CompSubmission',
-    },
+    }],
     totalPoints: { 
       type: Number,
       default: 0,

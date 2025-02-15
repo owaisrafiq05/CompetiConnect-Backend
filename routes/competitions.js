@@ -3,13 +3,27 @@ import {
   addCompType,
   getAllCompTypes,
 } from '../controllers/competitions/compType.js';
+import {
+  getAllCompetitions,
+  createCompetition,
+  addParticipant,
+  updateTotalPoints,
+  addSubmission,
+  getCompetitionById,
+} from '../controllers/competitions/competitions.js';
 
 const router = express.Router();
 
-// Route for adding a competition type
+// Competition Type routes
 router.post('/type', addCompType);
-
-// Route for getting all competition types
 router.get('/type', getAllCompTypes);
+
+// Competition routes
+router.get('/', getAllCompetitions);
+router.post('/', createCompetition);
+router.get('/:competitionId', getCompetitionById);
+router.patch('/:competitionId/participants/:userId', addParticipant);
+router.patch('/:competitionId/points', updateTotalPoints);
+router.patch('/:competitionId/submissions', addSubmission);
 
 export default router;
