@@ -19,6 +19,7 @@ import {
   getAllParticipantsSortedByPoints,
   getAnnouncements,
   addAnnouncement,
+  getAllCompetitionsByUserId,
 } from '../controllers/competitions/competitions.js';
 import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 
@@ -56,5 +57,8 @@ router.get('/:competitionId/participants/leaderboard', getAllParticipantsSortedB
 // Announcement routes
 router.get('/:competitionId/announcements', getAnnouncements);
 router.post('/:competitionId/announcements', addAnnouncement);
+
+// Get all competitions by user ID
+router.get('/user/:userId', getAllCompetitionsByUserId);
 
 export default router;

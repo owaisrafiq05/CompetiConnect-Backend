@@ -484,3 +484,30 @@ export const addAnnouncement = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
 };
+
+// Get all competitions by user ID
+export const getAllCompetitionsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const competitions = await Competition.find({ compOwnerUserId: userId })
+      .populate('compType', 'name description')
+      .select('compName compDescription participants isPrivate price createdAt')
+      .lean();
+    
+    const simplifiedCompetitions = competitions.map(comp => ({
+      _id: comp._id,
+      compName: comp.compName,
+      compDescription: comp.compDescription,
+      compType: comp.compType,
+      participantCount: comp.participants.length,
+      isPrivate: comp.isPrivate,
+      price: comp.price,
+      createdAt: comp.createdAt
+    }));
+    
+    res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
