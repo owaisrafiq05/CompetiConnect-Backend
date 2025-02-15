@@ -240,6 +240,7 @@ export const createRegistration = async (req, res) => {
   try {
     const { competitionId } = req.params;
     const { userId } = req.body;
+    const paymentSlip = req.file?.path; // Cloudinary URL if file was uploaded
 
     // Check if competition exists
     const competition = await Competition.findById(competitionId);
@@ -256,7 +257,8 @@ export const createRegistration = async (req, res) => {
     // Create registration
     const registration = await Register.create({
       competitionId,
-      userId
+      userId,
+      paymentSlip
     });
 
     res.status(StatusCodes.CREATED).json({ registration });

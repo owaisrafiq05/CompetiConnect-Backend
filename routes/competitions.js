@@ -18,7 +18,7 @@ import {
   updateSubmissionPoints,
   getAllParticipantsSortedByPoints,
 } from '../controllers/competitions/competitions.js';
-import { uploadSubmission } from '../middlewares/fileUpload.js';
+import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.get('/:competitionId/registrations', getAllRegistrationsById);
 router.post('/:competitionId/approve', approveUser);
 
 // New routes for registration and submissions
-router.post('/:competitionId/register', createRegistration);
+router.post('/:competitionId/register', uploadPaymentSlip.single('paymentSlip'), createRegistration);
 router.post(
   '/:competitionId/submissions',
   uploadSubmission.single('zipFile'),

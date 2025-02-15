@@ -34,4 +34,24 @@ export const uploadSubmission = multer({
   }
 });
 
+const paymentSlipStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'payment-slips',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+    public_id: (req, file) => `payment-${Date.now()}-${file.originalname}`,
+  },
+});
+
+export const uploadPaymentSlip = multer({ 
+  storage: paymentSlipStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
 export default upload;

@@ -11,6 +11,10 @@ const instance = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
+    },
+    paymentSlip: {
+      type: String, // Will store Cloudinary URL
+      required: false
     }
   },
   {
