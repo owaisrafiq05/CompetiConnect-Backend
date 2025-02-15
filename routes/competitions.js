@@ -34,7 +34,7 @@ router.patch('/:competitionId/participants/:userId', addParticipant);
 router.patch('/:competitionId/points', updateTotalPoints);
 router.patch('/:competitionId/submissions', addSubmission);
 router.get('/:competitionId/registrations', getAllRegistrationsById);
-router.post('/:competitionId/approve/:userId', approveUser);
+router.post('/:competitionId/approve', approveUser);
 
 // New routes for registration and submissions
 router.post('/:competitionId/register', createRegistration);

@@ -165,7 +165,8 @@ export const getAllRegistrationsById = async (req, res) => {
 // Approve user registration
 export const approveUser = async (req, res) => {
   try {
-    const { competitionId, userId } = req.params;
+    const { competitionId } = req.params;
+    const { userId } = req.body;
 
     // Find and delete the registration
     const registration = await Register.findOneAndDelete({ 
