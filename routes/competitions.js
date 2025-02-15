@@ -43,6 +43,7 @@ router.post(
   uploadSubmission.single('zipFile'),
   createSubmission
 );
+
 router.get('/:competitionId/submissions', getAllSubmissionsByCompetitionId);
 
 // Add new route for updating submission points
