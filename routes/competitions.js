@@ -17,6 +17,8 @@ import {
   getAllSubmissionsByCompetitionId,
   updateSubmissionPoints,
   getAllParticipantsSortedByPoints,
+  getAnnouncements,
+  addAnnouncement,
 } from '../controllers/competitions/competitions.js';
 import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 
@@ -50,5 +52,9 @@ router.patch('/:competitionId/submissions/points', updateSubmissionPoints);
 
 // Add new route for getting sorted participants
 router.get('/:competitionId/participants/leaderboard', getAllParticipantsSortedByPoints);
+
+// Announcement routes
+router.get('/:competitionId/announcements', getAnnouncements);
+router.post('/:competitionId/announcements', addAnnouncement);
 
 export default router;

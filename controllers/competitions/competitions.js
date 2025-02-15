@@ -400,3 +400,43 @@ export const getAllParticipantsSortedByPoints = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
 };
+
+// Get all announcements for a competition
+export const getAnnouncements = async (req, res) => {
+  try {
+    const { competitionId } = req.params;
+    
+    const competition = await Competition.findById(competitionId);
+    if (!competition) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
+    }
+
+    res.status(StatusCodes.OK).json({ announcements: competition.announcements });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
+// Add announcement to competition
+export const addAnnouncement = async (req, res) => {
+  try {
+    const { competitionId } = req.params;
+    const { announcement } = req.body;
+
+    if (!announcement) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Announcement text is required' });
+    }
+
+    const competition = await Competition.findById(competitionId);
+    if (!competition) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
+    }
+
+    competition.announcements.push(announcement);
+    await competition.save();
+
+    res.status(StatusCodes.OK).json({ announcements: competition.announcements });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};

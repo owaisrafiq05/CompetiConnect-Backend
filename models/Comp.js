@@ -47,6 +47,10 @@ const instance = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    announcements: [{
+      type: String,
+      required: false,
+    }],
   },
   {
     timestamps: true,
