@@ -218,41 +218,45 @@ export const approveUser = async (req, res) => {
     const emailContent = `
 <!DOCTYPE html>
 <html>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
-        <h2 style="color: #2c3e50; margin-bottom: 20px;">🎉 Registration Approved!</h2>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 10px;">
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px;">
+        <h2 style="color: #2c3e50; margin-bottom: 20px; font-size: 24px; word-wrap: break-word;">🎉 Registration Approved!</h2>
         
-        <p style="color: #34495e; font-size: 16px;">Dear <strong>${user.username}</strong>,</p>
+        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Dear <strong>${user.username}</strong>,</p>
         
-        <p style="color: #34495e; font-size: 16px;">Your registration for <strong>${competition.compName}</strong> has been approved!</p>
+        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Your registration for <strong>${competition.compName}</strong> has been approved!</p>
 
-        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0;">Competition Details</h3>
-            <ul style="list-style: none; padding: 0;">
-                <li style="margin: 10px 0;"><strong>Name:</strong> ${competition.compName}</li>
-                <li style="margin: 10px 0;"><strong>Description:</strong> ${competition.compDescription}</li>
-                <li style="margin: 10px 0;"><strong>Type:</strong> ${competition.compType.name}</li>
-                <li style="margin: 10px 0;"><strong>Pass Code:</strong> ${competition.passCode || 'N/A'}</li>
-                <li style="margin: 10px 0;"><strong>Price:</strong> ${competition.price || 'N/A'}</li>
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; word-wrap: break-word;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Competition Details</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin: 8px 0;"><strong>Name:</strong> ${competition.compName}</li>
+                <li style="margin: 8px 0;"><strong>Description:</strong> ${competition.compDescription}</li>
+                <li style="margin: 8px 0;"><strong>Type:</strong> ${competition.compType.name}</li>
+                <li style="margin: 8px 0;"><strong>Pass Code:</strong> ${competition.passCode || 'N/A'}</li>
+                <li style="margin: 8px 0;"><strong>Price:</strong> ${competition.price || 'N/A'}</li>
             </ul>
         </div>
 
-        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0;">Problem Statement</h3>
-            <p style="color: #34495e;">${competition.problemStatement}</p>
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Problem Statement</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.problemStatement}</p>
         </div>
 
-        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0;">Rule Book</h3>
-            <p style="color: #34495e;">${competition.compRuleBook}</p>
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Rule Book</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.compRuleBook}</p>
         </div>
 
-        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0;">Submission Rules</h3>
-            <p style="color: #34495e;">${competition.submissionRules}</p>
+        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Submission Rules</h3>
+            <p style="color: #34495e; word-wrap: break-word;">${competition.submissionRules}</p>
         </div>
 
-        <p style="color: #34495e; font-size: 16px; text-align: center; margin-top: 30px;">
+        <p style="color: #34495e; font-size: 16px; text-align: center; margin-top: 25px;">
             <strong>Best of luck! 🚀</strong>
         </p>
     </div>
