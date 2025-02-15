@@ -14,6 +14,7 @@ export const getAllCompetitions = async (req, res) => {
       .lean();
     
     const simplifiedCompetitions = competitions.map(comp => ({
+      _id: comp._id,
       compName: comp.compName,
       compDescription: comp.compDescription,
       compType: comp.compType,
