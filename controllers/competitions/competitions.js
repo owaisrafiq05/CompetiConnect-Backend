@@ -10,14 +10,16 @@ export const getAllCompetitions = async (req, res) => {
   try {
     const competitions = await Competition.find()
       .populate('compType', 'name description')
-      .select('compName compDescription participants')
+      .select('compName compDescription participants isPrivate price')
       .lean();
     
     const simplifiedCompetitions = competitions.map(comp => ({
       compName: comp.compName,
       compDescription: comp.compDescription,
       compType: comp.compType,
-      participantCount: comp.participants.length
+      participantCount: comp.participants.length,
+      isPrivate: comp.isPrivate,
+      price: comp.price
     }));
     
     res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
