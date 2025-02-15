@@ -9,12 +9,18 @@ import CompSubmission from '../../models/CompSubmission.js';
 export const getAllCompetitions = async (req, res) => {
   try {
     const competitions = await Competition.find()
-      .populate('compOwnerUserId', 'username email')
       .populate('compType', 'name description')
-      .populate('participants', 'username email')
-      .populate('compSubmissionObjId');
+      .select('compName compDescription participants')
+      .lean();
     
-    res.status(StatusCodes.OK).json({ competitions });
+    const simplifiedCompetitions = competitions.map(comp => ({
+      compName: comp.compName,
+      compDescription: comp.compDescription,
+      compType: comp.compType,
+      participantCount: comp.participants.length
+    }));
+    
+    res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
@@ -32,6 +38,7 @@ export const createCompetition = async (req, res) => {
       passCode,
       problemStatement,
       compRuleBook,
+      submissionRules,
     } = req.body;
 
     const competition = await Competition.create({
@@ -43,6 +50,7 @@ export const createCompetition = async (req, res) => {
       passCode,
       problemStatement,
       compRuleBook,
+      submissionRules,
       participants: [], // Initialize empty array
       compSubmissionObjId: [], // Initialize empty array
     });
@@ -131,7 +139,8 @@ export const getCompetitionById = async (req, res) => {
       .populate('compOwnerUserId', 'username email')
       .populate('compType', 'name description')
       .populate('participants', 'username email')
-      .populate('compSubmissionObjId');
+      .populate('compSubmissionObjId')
+      .select('compName compDescription isPrivate passCode problemStatement compRuleBook submissionRules totalPoints announcements createdAt updatedAt');
 
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
@@ -216,6 +225,9 @@ export const approveUser = async (req, res) => {
 
       Rule Book:
       ${competition.compRuleBook}
+
+      Submission Rules:
+      ${competition.submissionRules}
 
       Best of luck!
     `;

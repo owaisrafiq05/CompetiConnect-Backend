@@ -31,6 +31,10 @@ const instance = new mongoose.Schema(
       type: String,
       required: true,
     },
+    submissionRules: {
+      type: String,
+      required: true,
+    },
     problemStatement: { 
       type: String,
       required: true,
@@ -51,6 +55,7 @@ const instance = new mongoose.Schema(
       type: String,
       required: false,
     }],
+    
   },
   {
     timestamps: true,
