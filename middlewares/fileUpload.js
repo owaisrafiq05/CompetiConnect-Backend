@@ -13,4 +13,25 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
+const submissionStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'competition-submissions',
+    resource_type: 'raw', // This allows for non-image files
+    format: async () => 'zip',
+    public_id: (req, file) => `submission-${Date.now()}-${file.originalname}`,
+  },
+});
+
+export const uploadSubmission = multer({ 
+  storage: submissionStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/zip' || file.mimetype === 'application/x-zip-compressed') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only zip files are allowed!'), false);
+    }
+  }
+});
+
 export default upload;

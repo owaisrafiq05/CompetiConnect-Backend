@@ -49,25 +49,25 @@ app.use("/user", userRoutes);
 app.use("/setting", SettingRoute);
 app.use("/comp", compRoutes);
 
-// New Route to get competitions from MongoDB
-app.get("/competition", async (req, res) => {
-  try {
-    const competitions = await mongoose.connection.db.collection('competitions').find().toArray();
-    res.status(200).json(competitions);
-  } catch (error) {
-    res.status(500).json({ error: "Could not fetch the competitions" });
-  }
-});
+// // New Route to get competitions from MongoDB
+// app.get("/competition", async (req, res) => {
+//   try {
+//     const competitions = await mongoose.connection.db.collection('competitions').find().toArray();
+//     res.status(200).json(competitions);
+//   } catch (error) {
+//     res.status(500).json({ error: "Could not fetch the competitions" });
+//   }
+// });
 
 // New Route to get competitions from MongoDB
-app.get("/users", async (req, res) => {
-  try {
-    const competitions = await mongoose.connection.db.collection('registeredTeams').find().toArray();
-    res.status(200).json(competitions);
-  } catch (error) {
-    res.status(500).json({ error: "Could not fetch the competitions" });
-  }
-});
+// app.get("/users", async (req, res) => {
+//   try {
+//     const competitions = await mongoose.connection.db.collection('registeredTeams').find().toArray();
+//     res.status(200).json(competitions);
+//   } catch (error) {
+//     res.status(500).json({ error: "Could not fetch the competitions" });
+//   }
+// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
