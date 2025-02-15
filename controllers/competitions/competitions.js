@@ -216,32 +216,54 @@ export const approveUser = async (req, res) => {
 
     // Send email
     const emailContent = `
-      Dear ${user.username},
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">🎉 Registration Approved!</h2>
+        
+        <p style="color: #34495e; font-size: 16px;">Dear <strong>${user.username}</strong>,</p>
+        
+        <p style="color: #34495e; font-size: 16px;">Your registration for <strong>${competition.compName}</strong> has been approved!</p>
 
-      Your registration for ${competition.compName} has been approved!
+        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0;">Competition Details</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin: 10px 0;"><strong>Name:</strong> ${competition.compName}</li>
+                <li style="margin: 10px 0;"><strong>Description:</strong> ${competition.compDescription}</li>
+                <li style="margin: 10px 0;"><strong>Type:</strong> ${competition.compType.name}</li>
+                <li style="margin: 10px 0;"><strong>Pass Code:</strong> ${competition.passCode || 'N/A'}</li>
+                <li style="margin: 10px 0;"><strong>Price:</strong> ${competition.price || 'N/A'}</li>
+            </ul>
+        </div>
 
-      Competition Details:
-      Name: ${competition.compName}
-      Description: ${competition.compDescription}
-      Type: ${competition.compType.name}
-      Pass Code: ${competition.passCode || 'N/A'}
+        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0;">Problem Statement</h3>
+            <p style="color: #34495e;">${competition.problemStatement}</p>
+        </div>
 
-      Problem Statement:
-      ${competition.problemStatement}
+        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0;">Rule Book</h3>
+            <p style="color: #34495e;">${competition.compRuleBook}</p>
+        </div>
 
-      Rule Book:
-      ${competition.compRuleBook}
+        <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2c3e50; margin-top: 0;">Submission Rules</h3>
+            <p style="color: #34495e;">${competition.submissionRules}</p>
+        </div>
 
-      Submission Rules:
-      ${competition.submissionRules}
-
-      Best of luck!
-    `;
+        <p style="color: #34495e; font-size: 16px; text-align: center; margin-top: 30px;">
+            <strong>Best of luck! 🚀</strong>
+        </p>
+    </div>
+</body>
+</html>
+`;
 
     await sendEmail({
       to: user.email,
       subject: `Registration Approved - ${competition.compName}`,
-      text: emailContent,
+      html: emailContent,
     });
 
     res.status(StatusCodes.OK).json({ 
