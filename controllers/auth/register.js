@@ -5,22 +5,11 @@ import User from '../../models/User.js';
 import { signToken } from '../../middlewares/jsonwebtoken.js';
 
 const registerSchema = joi.object({
-  info: joi.object({
-    email: joi.string()
-      .email()
-      .required()
-      .messages({
-        'string.email': 'Please provide a valid email address',
-        'any.required': 'Email is required'
-      }),
-    name: joi.string()
-      .required()
-      .messages({
-        'any.required': 'Name is required'
-      }),
-    language: joi.string()
-      .default('ENGLISH')
-  }).required(),
+  username: joi.string()
+    .required()
+    .messages({
+      'any.required': 'Username is required'
+    }),
   password: joi.string()
     .min(6)
     .required()
@@ -28,23 +17,8 @@ const registerSchema = joi.object({
       'string.min': 'Password must be at least 6 characters long',
       'any.required': 'Password is required'
     }),
-  role: joi.string()
-    .valid('user', 'admin')
-    .default('user'),
-  profile: joi.object({
-    profilePictureURL: joi.string()
-      .required()
-      .messages({
-        'any.required': 'Profile picture URL is required'
-      })
-  }).required(),
-  subscription: joi.string()
-    .valid('free', 'premium', 'enterprise')
-    .default('free'),
-  apiKeys: joi.object({
-    chatGPT: joi.string().allow('').default(''),
-    gemini: joi.string().allow('').default('')
-  }).default({ chatGPT: '', gemini: '' })
+  myJoinComp: joi.array().items(joi.string()).default([]),
+  myCreatedComp: joi.array().items(joi.string()).default([]),
 });
 
 async function register(request, response) {
@@ -53,7 +27,7 @@ async function register(request, response) {
     const validatedData = await registerSchema.validateAsync(request.body, { abortEarly: false });
     
     // Check if user already exists
-    const existingUser = await User.findOne({ 'info.email': validatedData.info.email.toLowerCase() });
+    const existingUser = await User.findOne({ username: validatedData.username });
     if (existingUser) {
       return response.status(400).json({
         error: 'DuplicateEmail',
@@ -67,18 +41,10 @@ async function register(request, response) {
 
     // Create new user
     const newUser = new User({
-      info: {
-        email: validatedData.info.email.toLowerCase(),
-        name: validatedData.info.name,
-        language: validatedData.info.language
-      },
+      username: validatedData.username,
       password: hashedPassword,
-      role: validatedData.role,
-      profile: {
-        profilePictureURL: validatedData.profile.profilePictureURL
-      },
-      subscription: validatedData.subscription,
-      apiKeys: validatedData.apiKeys
+      myJoinComp: validatedData.myJoinComp,
+      myCreatedComp: validatedData.myCreatedComp,
     });
 
     // Save user to database

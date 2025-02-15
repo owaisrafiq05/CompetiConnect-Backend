@@ -3,55 +3,22 @@ import mongoose from 'mongoose';
 
 const instance = new mongoose.Schema(
   {
-    profile: {
-      profilePictureURL: {
-        type: String,
-        required: true,
-      },
-    },
-    role: {
+    username: { 
       type: String,
       required: true,
-      enum: ['user', 'admin'],
-      default: 'user',
+      unique: true,
     },
-    info: {
-      email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      language: {
-        type: String,
-        default: 'ENGLISH',
-      },
-    },
-
-    password: {
+    password: { 
       type: String,
       required: true,
     },
-
-    subscription: {
-      type: String,
-      enum: ['free', 'premium', 'enterprise'],
-      default: 'free',
+    myJoinComp: {
+      type: [String],
+      default: [],
     },
-
-    apiKeys: {
-      chatGPT: {
-        type: String,
-        default: '',
-      },
-      gemini: {
-        type: String,
-        default: '',
-      },
+    myCreatedComp: { 
+      type: [String],
+      default: [],
     },
   },
   {

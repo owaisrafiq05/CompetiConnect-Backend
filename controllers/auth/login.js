@@ -1,16 +1,13 @@
-// login.js
 import joi from 'joi';
 import bcrypt from 'bcrypt';
 import User from '../../models/User.js';
 import { signToken } from '../../middlewares/jsonwebtoken.js';
 
 const loginSchema = joi.object({
-  email: joi.string()
-    .email()
+  username: joi.string()
     .required()
     .messages({
-      'string.email': 'Please provide a valid email address',
-      'any.required': 'Email is required'
+      'any.required': 'Username is required'
     }),
   password: joi.string()
     .required()
@@ -21,27 +18,26 @@ const loginSchema = joi.object({
 
 async function login(request, response) {
   try {
-    // Validate request body
     const validatedData = await loginSchema.validateAsync(request.body, { abortEarly: false });
 
-    // Find user by email
-    const user = await User.findOne({ 'info.email': validatedData.email.toLowerCase() });
     
-    // Check if user exists and verify password
+    const user = await User.findOne({ username: validatedData.username });
+    
+    
     if (!user || !(await bcrypt.compare(validatedData.password, user.password))) {
       return response.status(401).json({
         error: 'AuthenticationError',
-        message: 'Invalid email or password'
+        message: 'Invalid username or password'
       });
     }
 
-    // Generate JWT token
+    
     const token = signToken({ 
       uid: user._id, 
       role: user.role 
     });
 
-    // Prepare response (excluding password)
+    
     const userResponse = user.toObject();
     delete userResponse.password;
 
@@ -52,7 +48,7 @@ async function login(request, response) {
     });
 
   } catch (error) {
-    // Handle validation errors
+   
     if (error.isJoi) {
       return response.status(400).json({
         error: 'ValidationError',
@@ -60,10 +56,10 @@ async function login(request, response) {
       });
     }
 
-    // Log unexpected errors
+   
     console.error('Login error:', error);
     
-    // Handle other errors
+   
     return response.status(500).json({
       error: 'InternalServerError',
       message: 'An unexpected error occurred during login'
@@ -71,12 +67,12 @@ async function login(request, response) {
   }
 }
 
-// Token login controller (renamed from loginWithToken)
+
 async function refreshLogin(request, response) {
   try {
     const { uid } = request.auth;
 
-    // Find user by ID and exclude password
+   
     const user = await User.findById(uid).select('-password');
     
     if (!user) {
@@ -86,7 +82,7 @@ async function refreshLogin(request, response) {
       });
     }
 
-    // Generate new token
+   
     const token = signToken({ 
       uid: user._id, 
       role: user.role 
@@ -109,9 +105,9 @@ async function refreshLogin(request, response) {
 
 async function getUserDetails(request, response) {
   try {
-    const { uid } = request.params; // Extract `uid` from the request parameters
+    const { uid } = request.params; 
 
-    // Find user by ID and exclude sensitive information like the password
+    
     const user = await User.findById(uid).select('-password');
     
     if (!user) {
