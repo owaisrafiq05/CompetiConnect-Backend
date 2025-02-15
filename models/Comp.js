@@ -55,7 +55,11 @@ const instance = new mongoose.Schema(
       type: String,
       required: false,
     }],
-    
+    price: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
   },
   {
     timestamps: true,

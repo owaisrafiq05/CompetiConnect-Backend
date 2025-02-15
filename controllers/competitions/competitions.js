@@ -39,6 +39,7 @@ export const createCompetition = async (req, res) => {
       problemStatement,
       compRuleBook,
       submissionRules,
+      price,
     } = req.body;
 
     const competition = await Competition.create({
@@ -51,6 +52,7 @@ export const createCompetition = async (req, res) => {
       problemStatement,
       compRuleBook,
       submissionRules,
+      price,
       participants: [], // Initialize empty array
       compSubmissionObjId: [], // Initialize empty array
     });
@@ -140,7 +142,7 @@ export const getCompetitionById = async (req, res) => {
       .populate('compType', 'name description')
       .populate('participants', 'username email')
       .populate('compSubmissionObjId')
-      .select('compName compDescription isPrivate passCode problemStatement compRuleBook submissionRules totalPoints announcements createdAt updatedAt');
+      .select('compName compDescription isPrivate passCode problemStatement compRuleBook submissionRules totalPoints price announcements createdAt updatedAt');
 
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
