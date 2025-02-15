@@ -19,7 +19,7 @@ import {
   getAllParticipantsSortedByPoints,
   getAnnouncements,
   addAnnouncement,
-  getAllCompetitionsByUserId,
+  getAllCompetitionsByUserId
 } from '../controllers/competitions/competitions.js';
 import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 

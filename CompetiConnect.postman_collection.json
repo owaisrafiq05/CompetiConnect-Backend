@@ -422,6 +422,14 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "update-user-points",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	]
 }
