@@ -10,6 +10,13 @@ const registerSchema = joi.object({
     .messages({
       'any.required': 'Username is required'
     }),
+  email: joi.string()
+    .email()
+    .required()
+    .messages({
+      'any.required': 'Email is required',
+      'string.email': 'Email must be a valid email address'
+    }),
   password: joi.string()
     .min(6)
     .required()
@@ -42,6 +49,7 @@ async function register(request, response) {
     // Create new user
     const newUser = new User({
       username: validatedData.username,
+      email: validatedData.email,
       password: hashedPassword,
       myJoinComp: validatedData.myJoinComp,
       myCreatedComp: validatedData.myCreatedComp,

@@ -1,6 +1,7 @@
 import joi from 'joi';
 import bcrypt from 'bcrypt';
 import User from '../../models/User.js';
+import UserModel from '../../models/User.js';
 import { signToken } from '../../middlewares/jsonwebtoken.js';
 
 const loginSchema = joi.object({
@@ -21,7 +22,7 @@ async function login(request, response) {
     const validatedData = await loginSchema.validateAsync(request.body, { abortEarly: false });
 
     
-    const user = await User.findOne({ username: validatedData.username });
+    const user = await UserModel.findOne({ username: validatedData.username });
     
     
     if (!user || !(await bcrypt.compare(validatedData.password, user.password))) {
@@ -73,7 +74,7 @@ async function refreshLogin(request, response) {
     const { uid } = request.auth;
 
    
-    const user = await User.findById(uid).select('-password');
+    const user = await UserModel.findById(uid).select('-password');
     
     if (!user) {
       return response.status(404).json({
@@ -108,7 +109,7 @@ async function getUserDetails(request, response) {
     const { uid } = request.params; 
 
     
-    const user = await User.findById(uid).select('-password');
+    const user = await UserModel.findById(uid).select('-password');
     
     if (!user) {
       return response.status(404).json({

@@ -4,6 +4,7 @@ import cors from "cors";
 import 'dotenv/config';
 import authRoutes from './routes/auth.js';
 import SettingRoute from './routes/settingRoute.js';
+import userRoutes from './routes/user.js'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.get("/healthz", (req, res) => {
 
 // Auth Routes
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 app.use("/setting", SettingRoute);
 
 // New Route to get competitions from MongoDB

@@ -12,6 +12,11 @@ const instance = new mongoose.Schema(
       type: String,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     myJoinComp: {
       type: [String],
       default: [],
