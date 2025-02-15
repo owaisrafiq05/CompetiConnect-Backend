@@ -1,0 +1,427 @@
+{
+	"info": {
+		"_postman_id": "b279bb4d-bbd3-49b5-a49b-3a8efe4becad",
+		"name": "CompetiConnect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34577609"
+	},
+	"item": [
+		{
+			"name": "create-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"owais rafiq\",\n  \"email\": \"hero2911321@gmail.com\",\n  \"password\": \"123456\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"owais\",\n  \"password\": \"verysecurepassword\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-comp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"compOwnerUserId\": \"89c1efa3b2d45678e9f012a3\",\r\n  \"compName\": \"Frontend Masters Challenge\",\r\n  \"compDescription\": \"Build a responsive e-commerce dashboard with modern web technologies\",\r\n  \"compType\": \"Web Development\",\r\n  \"isPrivate\": false,\r\n  \"passCode\": \"\",\r\n  \"problemStatement\": \"Create a responsive e-commerce dashboard that includes product management, sales analytics, and customer insights. The dashboard should feature real-time updates and interactive data visualization.\",\r\n  \"compRuleBook\": \"1. Must use React or Vue.js framework\\n2. Must be mobile-responsive\\n3. Accessibility standards must be met\\n4. Code must follow ES6+ standards\\n5. Performance score must be above 90 on Lighthouse\",\r\n  \"submissionRules\": \"1. File types allowed: .js, .jsx, .ts, .tsx only\\n2. Project must include package.json and setup instructions\\n3. Maximum 3 submissions allowed\\n4. Submission deadline: July 15, 2024\\n5. Must include component documentation\\n6. All API keys must be properly secured\\n7. Deploy the solution and provide a live URL\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register-private",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"67b0f7034e9809df255783a9\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ff99349a87f7af00866d/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ff99349a87f7af00866d",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-comp-by-id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approve-register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"67b0f7034e9809df255783a9\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ff99349a87f7af00866d/approve",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ff99349a87f7af00866d",
+						"approve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-all-comps",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register-public",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"67b0f7034e9809df255783a9\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/participants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"participants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-total-points",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"totalPoints\": 40\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/points",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"points"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-all-comp-registrations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/registrations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"registrations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-submission",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userId",
+							"value": "67b0f7034e9809df255783a9",
+							"type": "text"
+						},
+						{
+							"key": "zipFile",
+							"type": "file",
+							"src": "/D:/CN Labs Works/CN LAB 02/CN-02_23k-2042.zip"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/submissions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"submissions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-comp-submissions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/submissions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"submissions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-leadboard",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/participants/leaderboard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"participants",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-comp-announcements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/announcements",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"announcements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add-comp-announcement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"announcement\": \"Please stay calm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/comp/67b0ffd4349a87f7af00866f/announcements",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"67b0ffd4349a87f7af00866f",
+						"announcements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-user-comp",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/comp/user/67b0f8e24e9809df255783ac",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"comp",
+						"user",
+						"67b0f8e24e9809df255783ac"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
