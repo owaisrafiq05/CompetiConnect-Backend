@@ -2,11 +2,6 @@ import mongoose from 'mongoose';
 
 const instance = new mongoose.Schema(
   {
-    compSubmissionId: { 
-      type: String,
-      required: true,
-      unique: true,
-    },
     userId: { 
       type: mongoose.Schema.Types.ObjectId,
       required: true,

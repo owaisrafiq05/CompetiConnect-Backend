@@ -2,11 +2,6 @@ import mongoose from 'mongoose';
 
 const instance = new mongoose.Schema(
   {
-    compId: { 
-      type: String,
-      required: true,
-      unique: true,
-    },
     compOwnerUserId: { 
       type: mongoose.Schema.Types.ObjectId,
       required: true,
