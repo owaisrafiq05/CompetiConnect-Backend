@@ -19,7 +19,8 @@ import {
   getAllParticipantsSortedByPoints,
   getAnnouncements,
   addAnnouncement,
-  getAllCompetitionsByUserId
+  getAllCompetitionsByUserId,
+  deleteParticipant
 } from '../controllers/competitions/competitions.js';
 import { uploadSubmission, uploadPaymentSlip } from '../middlewares/fileUpload.js';
 
@@ -61,5 +62,7 @@ router.post('/:competitionId/announcements', addAnnouncement);
 
 // Get all competitions by user ID
 router.get('/user/:userId', getAllCompetitionsByUserId);
+
+router.delete('/:competitionId/participants', deleteParticipant);
 
 export default router;

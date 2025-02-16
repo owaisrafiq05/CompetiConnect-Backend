@@ -73,7 +73,9 @@ export const addParticipant = async (req, res) => {
     const { competitionId } = req.params;
     const { userId } = req.body;
 
-    const competition = await Competition.findById(competitionId);
+    const competition = await Competition.findById(competitionId)
+      .populate('compType', 'name description')
+      .select('compName compDescription compType isPrivate passCode problemStatement compRuleBook submissionRules price participants');
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
     }
@@ -87,15 +89,24 @@ export const addParticipant = async (req, res) => {
 
     // Hit the /myJoinComp POST API with query parameters
     try {
-      const response = await axios.post(`http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`, null, {
-      });
+      const response = await axios.post(
+        `http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`,
+        {}, // empty request body
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 5000 // 5 second timeout
+        }
+      );
 
       if (response.status !== 200) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp' });
+        throw new Error(`Failed with status: ${response.status}`);
       }
     } catch (apiError) {
-      console.error('Error hitting /myJoinComp API:', apiError.response ? apiError.response.data : apiError.message);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp', details: apiError.message });
+      console.error('Error hitting /myJoinComp API:', apiError);
+      // Don't return error response - continue with the flow
+      // Just log the error since this is a non-critical operation
     }
 
     res.status(StatusCodes.OK).json({ competition });
@@ -200,7 +211,7 @@ export const approveUser = async (req, res) => {
     // Add user to competition participants
     const competition = await Competition.findById(competitionId)
       .populate('compType', 'name description')
-      .select('compName compDescription compType isPrivate passCode problemStatement compRuleBook submissionRules price');
+      .select('compName compDescription compType isPrivate passCode problemStatement compRuleBook submissionRules price participants');
     
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
@@ -223,15 +234,24 @@ export const approveUser = async (req, res) => {
     }
     // Hit the /myJoinComp POST API with query parameters
     try {
-      const response = await axios.post(`http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`, null, {
-      });
+      const response = await axios.post(
+        `http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`,
+        {}, // empty request body
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 5000 // 5 second timeout
+        }
+      );
 
       if (response.status !== 200) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp' });
+        throw new Error(`Failed with status: ${response.status}`);
       }
     } catch (apiError) {
-      console.error('Error hitting /myJoinComp API:', apiError.response ? apiError.response.data : apiError.message);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp', details: apiError.message });
+      console.error('Error hitting /myJoinComp API:', apiError);
+      // Don't return error response - continue with the flow
+      // Just log the error since this is a non-critical operation
     }
 
     // Get user email
@@ -242,58 +262,36 @@ export const approveUser = async (req, res) => {
 
     // Send email
     const emailContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 10px;">
-    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px;">
-        <h2 style="color: #2c3e50; margin-bottom: 20px; font-size: 24px; word-wrap: break-word;">🎉 Registration Approved!</h2>
-        
-        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Dear <strong>${user.username}</strong>,</p>
-        
-        <p style="color: #34495e; font-size: 16px; word-wrap: break-word;">Your registration for <strong>${competition.compName}</strong> has been approved!</p>
+Dear ${user.username},
 
-        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; word-wrap: break-word;">
-            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Competition Details</h3>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin: 8px 0;"><strong>Name:</strong> ${competition.compName}</li>
-                <li style="margin: 8px 0;"><strong>Description:</strong> ${competition.compDescription}</li>
-                <li style="margin: 8px 0;"><strong>Type:</strong> ${competition.compType.name}</li>
-                <li style="margin: 8px 0;"><strong>Pass Code:</strong> ${competition.passCode || 'N/A'}</li>
-                <li style="margin: 8px 0;"><strong>Price:</strong> ${competition.price || 'N/A'}</li>
-            </ul>
-        </div>
+Your registration for ${competition.compName} has been approved!
 
-        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Problem Statement</h3>
-            <p style="color: #34495e; word-wrap: break-word;">${competition.problemStatement}</p>
-        </div>
+Competition Details:
+- Name: ${competition.compName}
+- Description: ${competition.compDescription}
+- Type: ${competition.compType}
+- Pass Code: ${competition.passCode || 'N/A'}
+- Price: ${competition.price || 'N/A'}
 
-        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Rule Book</h3>
-            <p style="color: #34495e; word-wrap: break-word;">${competition.compRuleBook}</p>
-        </div>
+Problem Statement:
+${competition.problemStatement}
 
-        <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Submission Rules</h3>
-            <p style="color: #34495e; word-wrap: break-word;">${competition.submissionRules}</p>
-        </div>
+Rule Book:
+${competition.compRuleBook}
 
-        <p style="color: #34495e; font-size: 16px; text-align: center; margin-top: 25px;">
-            <strong>Best of luck! 🚀</strong>
-        </p>
-    </div>
-</body>
-</html>
+Submission Rules:
+${competition.submissionRules}
+
+Your Link:
+http://localhost:5173/competition-page/${competitionId}
+
+Best of luck!
 `;
-
+    console.log(emailContent);
     await sendEmail({
       to: user.email,
       subject: `Registration Approved - ${competition.compName}`,
-      html: emailContent,
+      text: emailContent,
     });
 
     res.status(StatusCodes.OK).json({ 
@@ -533,6 +531,37 @@ export const getAllCompetitionsByUserId = async (req, res) => {
     }));
     
     res.status(StatusCodes.OK).json({ competitions: simplifiedCompetitions });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
+// Delete participant from competition
+export const deleteParticipant = async (req, res) => {
+  try {
+    const { competitionId } = req.params;
+    const { userId } = req.body;
+
+    const competition = await Competition.findById(competitionId);
+    if (!competition) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
+    }
+
+    // Check if user is a participant
+    if (!competition.participants.includes(userId)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'User is not a participant' });
+    }
+
+    // Remove user from participants array
+    competition.participants = competition.participants.filter(
+      participantId => participantId.toString() !== userId
+    );
+    await competition.save();
+
+    res.status(StatusCodes.OK).json({ 
+      message: 'Participant removed successfully',
+      competition 
+    });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
