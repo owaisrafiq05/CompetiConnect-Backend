@@ -199,7 +199,8 @@ export const approveUser = async (req, res) => {
 
     // Add user to competition participants
     const competition = await Competition.findById(competitionId)
-      .populate('compType', 'name description');
+      .populate('compType', 'name description')
+      .select('compName compDescription compType isPrivate passCode problemStatement compRuleBook submissionRules price');
     
     if (!competition) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Competition not found' });
