@@ -9,15 +9,15 @@ import {
 const router = express.Router();
 
 // Route for getting myJoinComp
-router.get('/myJoinComp', getMyJoinComp);
+router.get('/:userId/myJoinComp', getMyJoinComp);
 
 // Route for getting myCreatedComp
-router.get('/myCreatedComp', getMyCreatedComp);
+router.get('/:userId/myCreatedComp', getMyCreatedComp);
 
 // Route for adding comp ID to myCreatedComp
-router.post('/myCreatedComp', addToMyCreatedComp);
+router.post('/:userId/:compId/myCreatedComp', addToMyCreatedComp);
 
 // Route for adding comp ID to myJoinComp
-router.post('/myJoinComp', addToMyJoinComp);
+router.post('/:userId/:compId/myJoinComp', addToMyJoinComp);
 
 export default router;

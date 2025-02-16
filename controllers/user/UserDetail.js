@@ -2,7 +2,7 @@ import User from '../../models/User.js';
 
 // GET controller for retrieving myJoinComp
 async function getMyJoinComp(request, response) {
-  const userId = request.user.id; // Assuming user ID is available in request
+  const { userId } = request.params; // Assuming user ID is available in request
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -17,7 +17,7 @@ async function getMyJoinComp(request, response) {
 
 // GET controller for retrieving myCreatedComp
 async function getMyCreatedComp(request, response) {
-  const userId = request.user.id; // Assuming user ID is available in request
+    const { userId } = request.params; // Assuming user ID is available in request
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -32,8 +32,8 @@ async function getMyCreatedComp(request, response) {
 
 // POST controller for adding comp ID to myCreatedComp
 async function addToMyCreatedComp(request, response) {
-  const userId = request.user.id; // Assuming user ID is available in request
-  const { compId } = request.query; // Get compId from query params
+  const { userId } = request.params; // Assuming user ID is available in request
+  const { compId } = request.params; // Get compId from query params
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -50,8 +50,8 @@ async function addToMyCreatedComp(request, response) {
 
 // POST controller for adding comp ID to myJoinComp
 async function addToMyJoinComp(request, response) {
-  const userId = request.user.id; // Assuming user ID is available in request
-  const { compId } = request.query; // Get compId from query params
+  const { userId } = request.params; // Get userId from query params
+  const { compId } = request.params; // Get compId from query params
   try {
     const user = await User.findById(userId);
     if (!user) {

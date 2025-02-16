@@ -4,6 +4,7 @@ import Register from '../../models/Register.js';
 import User from '../../models/User.js';
 import { sendEmail } from '../../utils/sendEmail.js';
 import CompSubmission from '../../models/CompSubmission.js';
+import axios from 'axios';
 
 // Get all competitions
 export const getAllCompetitions = async (req, res) => {
@@ -83,6 +84,19 @@ export const addParticipant = async (req, res) => {
 
     competition.participants.push(userId);
     await competition.save();
+
+    // Hit the /myJoinComp POST API with query parameters
+    try {
+      const response = await axios.post(`http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`, null, {
+      });
+
+      if (response.status !== 200) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp' });
+      }
+    } catch (apiError) {
+      console.error('Error hitting /myJoinComp API:', apiError.response ? apiError.response.data : apiError.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp', details: apiError.message });
+    }
 
     res.status(StatusCodes.OK).json({ competition });
   } catch (error) {
@@ -183,16 +197,6 @@ export const approveUser = async (req, res) => {
     const { competitionId } = req.params;
     const { userId } = req.body;
 
-    // Find and delete the registration
-    const registration = await Register.findOneAndDelete({ 
-      competitionId, 
-      userId 
-    });
-
-    if (!registration) {
-      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Registration not found' });
-    }
-
     // Add user to competition participants
     const competition = await Competition.findById(competitionId)
       .populate('compType', 'name description');
@@ -207,6 +211,27 @@ export const approveUser = async (req, res) => {
 
     competition.participants.push(userId);
     await competition.save();
+
+    const registration = await Register.findOneAndDelete({ 
+      competitionId, 
+      userId 
+    });
+
+    if (!registration) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Registration not found' });
+    }
+    // Hit the /myJoinComp POST API with query parameters
+    try {
+      const response = await axios.post(`http://localhost:5000/user/${userId}/${competitionId}/myJoinComp`, null, {
+      });
+
+      if (response.status !== 200) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp' });
+      }
+    } catch (apiError) {
+      console.error('Error hitting /myJoinComp API:', apiError.response ? apiError.response.data : apiError.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp', details: apiError.message });
+    }
 
     // Get user email
     const user = await User.findById(userId);
