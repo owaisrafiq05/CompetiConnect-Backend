@@ -61,6 +61,19 @@ export const createCompetition = async (req, res) => {
       compSubmissionObjId: [], // Initialize empty array
     });
 
+    // Hit the /myJoinComp POST API with query parameters
+    try {
+      const response = await axios.post(`http://localhost:5000/user/${compOwnerUserId}/${competition._id}/myCreatedComp`, null, {
+      });
+
+      if (response.status !== 200) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp' });
+      }
+    } catch (apiError) {
+      console.error('Error hitting /myJoinComp API:', apiError.response ? apiError.response.data : apiError.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add to myJoinComp', details: apiError.message });
+    }
+
     res.status(StatusCodes.CREATED).json({ competition });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
