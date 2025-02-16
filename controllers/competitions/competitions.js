@@ -295,8 +295,6 @@ ${competition.compRuleBook}
 Submission Rules:
 ${competition.submissionRules}
 
-Your Link:
-http://localhost:5173/competition-page/${competitionId}
 
 Best of luck!
 `;
